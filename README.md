@@ -6,7 +6,7 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 
 
 ## Pimped Bash
-![Pimped Bash](https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/pimped-bash.png)
+<img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/pimped-bash.png">
 
 ### Manual installation
 1. Install [Windows Terminal](https://apps.microsoft.com/store/detail/windows-terminal-preview/9N8G5RFZ9XK3)
@@ -20,7 +20,7 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 # Visual Studio
 
 # Power Toys
-![Pimped Bash](https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/powertoys-icon.png)
+<img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/powertoys-icon.png" width="20%">
 
 ### Manual installation
 1. Install [PowerToys](https://apps.microsoft.com/store/detail/microsoft-powertoys/XP89DCGQ3K6VLD)
