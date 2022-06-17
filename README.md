@@ -1,9 +1,12 @@
-# IDE-Configuration
+# IDE Configuration
+Simple set of scripts to automate IDE configuration.
 
-## Bash
+## Installation
+Easiest way to install anything you need is to run ``all-in-one-installer`` with admin privileges. But if you want install something manually there are instructions below.
 
-### Automatic installation
-Run ``setup.ps1`` with admin priviliges
+
+## Pimped Bash
+![Pimped Bash](https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/pimped-bash.png)
 
 ### Manual installation
 1. Install [Windows Terminal](https://apps.microsoft.com/store/detail/windows-terminal-preview/9N8G5RFZ9XK3)
@@ -17,5 +20,9 @@ Run ``setup.ps1`` with admin priviliges
 # Visual Studio
 
 # Power Toys
-1. Go to %LOCALAPPDATA%\Microsoft\PowerToys
-2. Replace settings.json
+![Pimped Bash](https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/powertoys-icon.png)
+
+### Manual installation
+1. Install [PowerToys](https://apps.microsoft.com/store/detail/microsoft-powertoys/XP89DCGQ3K6VLD)
+2. Go to %LOCALAPPDATA%\Microsoft\PowerToys
+3. Replace settings.json
