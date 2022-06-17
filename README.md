@@ -18,7 +18,7 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 7. Copy ``.bashrc`` to %USERPROFILE%
 
 # Visual Studio
-
+I found automating this step very complicated so just open Visual Studio then Tools -> Import and Export Settings
 # Power Toys
 <img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/powertoys-icon.png" width="20%">
 

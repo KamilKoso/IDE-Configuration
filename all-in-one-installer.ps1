@@ -5,27 +5,31 @@ Import-Module ./installers/modules/messages.psm1 -DisableNameChecking
 
 
 function Write-Welcome-Message {
-    Write-Host  "*********************  IDE Configuration Installer  *********************"
-    Write-Host  "* Script to automate IDE configuration process                          *"
-    Write-Host  "*                                                                       *"
-    Write-Host  "*                                                                       *"
-    Write-Host  "* Option:               Description:                                    *"
-    Write-Host  "*  -------------------------------------------------------------------- *"
-    Write-Host  "*  1 Install Tools:      Installs tools required in next steps          *"
-    Write-Host  "*                                                                       *"
-    Write-Host  "*  2 Install Pimped Bash: Installs Windows Terminal, fonts, powerline,  *"
-    Write-Host  "*                          lsd and configures all of it                 *"
-    Write-Host  "*                                                                       *"
-    Write-Host  "*  3 Install PowerToys:  Installs PowerToys and applies settings        *"
-    Write-Host  "*                         located in PowerToys directory                *"
-    Write-Host  "*                                                                       *"
+    Write-Host  "*********************  IDE Configuration Installer  *************************"
+    Write-Host  "* Script to automate IDE configuration process                              *"
+    Write-Host  "*                                                                           *"
+    Write-Host  "*                                                                           *"
+    Write-Host  "* Options:                Description:                                      *"
+    Write-Host  "*  --------------------------------------------------------------------     *"
+    Write-Host  "*  1 Install Tools:        Installs tools required in next steps            *"
+    Write-Host  "*                                                                           *"
+    Write-Host  "*  2 Install Pimped Bash:  Installs Windows Terminal, fonts, powerline,     *"
+    Write-Host  "*                            lsd and configures all of it                   *"
+    Write-Host  "*                                                                           *"
+    Write-Host  "*  3 Install PowerToys:    Installs PowerToys and applies settings          *"
+    Write-Host  "*                           located in PowerToys directory                  *"
+    Write-Host  "*                                                                           *"
+    Write-Host  "*  Visual Studio:          Automating this step became very complicated     *"
+    Write-Host  "*                           so import settings manually                     *"
+    Write-Host  "*                           by going to Tools -> Import and Export Settings *"
+    Write-Host  "*                                                                           *"
     Write-Exit-Line
-    Write-Host  "*************************************************************************"
+    Write-Host  "*****************************************************************************"
 }
 
 function Write-Exit-Line {
     Write-Host -NoNewline  "*"
-    Write-Host -NoNewline  "  0 Exit:  Exits the script                                            " -ForeGroundColor Red
+    Write-Host -NoNewline  "  0 Exit:  Exits the script                                                " -ForeGroundColor Red
     Write-Host  "*"
 }
 
