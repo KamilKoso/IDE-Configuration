@@ -5,6 +5,57 @@ function Test-IsAdministrator {
      ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
  }
 
+ function Install-WinGet {
+     #Install the latest package from GitHub
+     [cmdletbinding(SupportsShouldProcess)]
+     [OutputType("None")]
+     [OutputType("Microsoft.Windows.Appx.PackageManager.Commands.AppxPackage")]
+     Param(
+         [switch]$Passthru
+     )
+     if ($PSVersionTable.PSVersion.Major -eq 7) {
+          Write-Warning "This command does not work in PowerShell 7. You must install in Windows PowerShell."
+          return
+     }
+     
+     if([bool](Get-Command -Name 'winget' -ErrorAction SilentlyContinue)) {
+          Write-Information "Winget is already installed. Skipping step."
+          return;
+     }
+
+     Write-Information "Installing Winget"
+     #test for requirement
+     $Requirement = Get-AppPackage "Microsoft.DesktopAppInstaller"
+     if (-Not $requirement) {
+         Write-Information "Installing Desktop App Installer"
+         Try {
+             Add-AppxPackage -Path "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -erroraction Stop
+         }
+         Catch {
+             Throw $_
+         }
+     }
+ 
+     $uri = "https://api.github.com/repos/microsoft/winget-cli/releases"
+         $get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+         $data = $get[0].assets | Where-Object name -Match 'msixbundle'
+         $appx = $data.browser_download_url
+         Write-Verbose "[$((Get-Date).TimeofDay)] $appx"
+         If ($pscmdlet.ShouldProcess($appx, "Downloading asset")) {
+             $file = Join-Path -path $env:temp -ChildPath $data.name
+ 
+             Write-Verbose "[$((Get-Date).TimeofDay)] Saving to $file"
+             Invoke-WebRequest -Uri $appx -UseBasicParsing -DisableKeepAlive -OutFile $file
+ 
+             Write-Verbose "[$((Get-Date).TimeofDay)] Adding Appx Package"
+             Add-AppxPackage -Path $file -ErrorAction Stop
+ 
+             if ($passthru) {
+                 Get-AppxPackage microsoft.desktopAppInstaller
+             }
+         }
+ }
+
  function Write-Information {
      [CmdletBinding()]
      param  
@@ -14,10 +65,11 @@ function Test-IsAdministrator {
      Write-Host (Get-Date) "[Information]" $InformationMessage -ForegroundColor Blue
  }
 
-function Install-Font {  
+function Install-Font {
+     [CmdletBinding()]
      param  
      (  
-          [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][System.IO.FileInfo]$FontFile  
+          [Parameter(Mandatory = $true, Position=0)][ValidateNotNullOrEmpty()][System.IO.FileInfo]$FontFile  
      )  
       
      #Get Font Name from the File's Extended Attributes  
@@ -99,18 +151,20 @@ function Install-Windows-Terminal {
 }
      
 function Install-PowerLine {
+     $InstallationFolder = $HOME + "\.bash\themes\git_bash_windows_powerline"
+     if(Test-Path $InstallationFolder) {
+          Write-Information "Powerline is already installed. Skipping step..."
+     }
      Write-Information "Installing PowerLine..."
-     Set-Location $HOME
-     git clone https://github.com/diesire/git_bash_windows_powerline.git .bash/themes/git_bash_windows_powerline
-     Set-Location -Path $PSScriptRoot
+     git clone https://github.com/diesire/git_bash_windows_powerline.git $InstallationFolder
 }
      
 function Install-Fonts {
      $FontName = "JetBrains Mono NL Regular Nerd Font Complete.ttf"
-     Write-Information "Installing " + $FontName + " font..."
+     Write-Information ("Installing " + $FontName + " font...")
      $FontUrl = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/NoLigatures/Regular/complete/JetBrains%20Mono%20NL%20Regular%20Nerd%20Font%20Complete.ttf"
-     Invoke-RestMethod -Uri $FontUrl | Install-Font
-     Install-Font -FontFile (Get-Item $FontName)
+     Invoke-RestMethod -Uri $FontUrl -OutFile $FontName
+     Install-Font (Get-Item $FontName)
      Remove-Item $FontName
 }
 
@@ -125,7 +179,7 @@ function Install-Lsd {
           Invoke-Expression "scoop update"
       }
       # Install lsd if not installed
-      if(Test-Path -Path "~\scoop\apps\lsd") {
+      if(Test-Path "~\scoop\apps\lsd") {
           Write-Information "Lsd is already installed, trying to update instead..."
           Invoke-Expression "scoop update lsd"
       } else {
@@ -149,7 +203,8 @@ if ((Test-IsAdministrator) -eq $false) {
 }
 
 Set-Location -Path $PSScriptRoot
-Install-Windows-Terminal;
+Install-WinGet
+Install-Windows-Terminal
 Install-PowerLine
 Install-Fonts
 Install-Lsd
