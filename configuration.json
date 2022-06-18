@@ -1,0 +1,32 @@
+{
+    "visualStudio": [
+        {
+            "visualStudioVersion": "Visual Studio Community 2022",
+            "settingsFile": "./VisualStudio/VS_2022.vssettings",
+            "extensions": [
+                "SteveCadwallader.CodeMaid", 
+                "MadsKristensen.AddNewFile64", 
+                "TomasRestrepo.Viasfora", 
+                "OlegTarasov.Iconizer2022", 
+                "EinarEgilsson.StopOnFirstBuildError"
+            ]
+        }
+    ],
+    "pimpedBash": {
+        "bashrcPath": "./Bash/.bashrc",
+        "windowsTerminalSettingsPath": "./Bash/settings.json",
+        "installLsd": true,
+        "installPowerline": true,
+        "fontsToInstall": [
+            {
+                "fontName": "JetBrains Mono NL Regular Nerd Font Complete.ttf",
+                "fontDownloadUri": "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/NoLigatures/Regular/complete/JetBrains%20Mono%20NL%20Regular%20Nerd%20Font%20Complete.ttf"
+            }
+        ]
+    },
+    "tools": {
+        "powerToys": {
+            "settingsPath": "./PowerToys/settings.json"
+        }
+    }
+}

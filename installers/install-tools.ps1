@@ -38,4 +38,35 @@ function Install-WinGet {
     }
 }
 
+function InstallPowerToys {
+    $PowerToysId = "Microsoft.PowerToys"
+    $WingetResult = winget list $PowerToysId --accept-source-agreements | Out-String
+    if ($WingetResult -match $PowerToysId) {
+        Write-Information "Power Toys are already installed. Skipping step..."
+        return
+    }
+
+    Write-Information "Installing Power Toys..."
+    winget install $PowerToysId --source winget
+    Write-Success "Installed Power Toys"
+}
+
+
+function ApplyPowerToysConfiguration {
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrEmpty()][string] $PathToSettingsFile
+    )
+    Write-Information "Applying configuration..."
+    Copy-Item $PathToSettingsFile "$ENV:LOCALAPPDATA\Microsoft\PowerToys"
+    Write-Success "Configuration applied."
+}
+
+Set-Location '..'
+$configurations = (Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json).tools;
+
 Install-WinGet
+if($null -ne $configurations.powerToys) {
+    InstallPowerToys
+    ApplyPowerToysConfiguration -PathToSettingsFile $configurations.powerToys.settingsPath
+}

@@ -5,47 +5,48 @@ Import-Module ./installers/modules/messages.psm1 -DisableNameChecking
 
 
 function Write-Welcome-Message {
-    Write-Host  "*********************  IDE Configuration Installer  *************************"
-    Write-Host  "*                                                                           *"
-    Write-Host  "* Script to automate IDE configuration process                              *"
-    Write-Host  "*                                                                           *"
+    Write-Host  "******************************  IDE Configurer  ******************************"
+    Write-Host  "*                                                                            *"
+    Write-Host  "* Script to automate IDE configuration process                               *"
+    Write-Host  "* adjust configuration.json file to your needs before running the script     *"
+    Write-Host  "*                                                                            *"
     Write-Warning-Line
-    Write-Host  "*                                                                           *"
-    Write-Host  "*                                                                           *"
-    Write-Host  "*  Options:                   Description:                                  *"
-    Write-Host  "*  --------------------------------------------------------------------     *"
-    Write-Host  "*  1. Install Tools           Installs tools that are required              *"
-    Write-Host  "*                             in next steps                                 *"
-    Write-Host  "*                                                                           *"
-    Write-Host  "*  2. Install Pimped Bash     Installs Windows Terminal, fonts, powerline,  *"
-    Write-Host  "*                             lsd and configures all of it                  *"
-    Write-Host  "*                                                                           *"
-    Write-Host  "*  3. Install PowerToys       Installs PowerToys and applies settings       *"
-    Write-Host  "*                             located in PowerToys directory                *"
-    Write-Host  "*                                                                           *"
+    Write-Host  "*                                                                            *"
+    Write-Host  "*                                                                            *"
+    Write-Host  "*  Options:                   Description:                                   *"
+    Write-Host  "*  --------------------------------------------------------------------      *"
+    Write-Host  "*  1. Install Tools           Installs tools that are required               *"
+    Write-Host  "*                             in next steps                                  *"
+    Write-Host  "*                                                                            *"
+    Write-Host  "*  2. Install Pimped Bash     Installs Windows Terminal, fonts, powerline,   *"
+    Write-Host  "*                             lsd and configures all of it                   *"
+    Write-Host  "*                                                                            *"
+    Write-Host  "*  3. Install PowerToys       Installs PowerToys and applies settings        *"
+    Write-Host  "*                             located in PowerToys directory                 *"
+    Write-Host  "*                                                                            *"
     Write-Host  "*  4. Configure Visual Studio Imports settings and installs extensions       *"
-    Write-Host  "*                             specified in VisualStudio/configuration.json  *"
-    Write-Host  "*                             for every Visual Studio version specified     *"
-    Write-Host  "*                                                                           *"
+    Write-Host  "*                             specified in VisualStudio/configuration.json   *"
+    Write-Host  "*                             for every Visual Studio version specified      *"
+    Write-Host  "*                                                                            *"
     Write-Exit-Line
-    Write-Host  "*                                                                           *"
+    Write-Host  "*                                                                            *"
     Write-Host  "*****************************************************************************"
 }
 
 function Write-Exit-Line {
     Write-Host -NoNewline  "*"
-    Write-Host -NoNewline  "  0. Exit  Exits the script                                                " -ForeGroundColor Blue
+    Write-Host -NoNewline  "  0. Exit  Exits the script                                                 " -ForeGroundColor Blue
     Write-Host  "*"
 }
 
 function Write-Warning-Line {
     Write-Host -NoNewline  "* "
     Write-Host -NoNewline "Do not close powershell when script is running, " -ForeGroundColor Red
-    Write-Host  "                          *"
+    Write-Host  "*"
 
     Write-Host -NoNewline  "*"
-    Write-Host -NoNewline  " this may cause malfunctions in the system !" -ForeGroundColor Red
-    Write-Host "                               *"
+    Write-Host -NoNewline  " this may cause malfunctions in the system !                                " -ForeGroundColor Red
+    Write-Host "*"
 }
 
 # Check adming rights

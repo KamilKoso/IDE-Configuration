@@ -56,8 +56,8 @@ function Install-Vsix {
 function Import-VisualStudioSettingsFile {
     [CmdletBinding()]
     param(
-        [ValidateNotNull()][Microsoft.VisualStudio.Setup.Instance] $VisualStudioInstance,
-        [ValidateNotNullOrEmpty()][string] $PathToSettingsFile,
+        [ValidateNotNull()][Parameter(Mandatory = $true, Position = 0)][Microsoft.VisualStudio.Setup.Instance] $VisualStudioInstance,
+        [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 1)][string] $PathToSettingsFile,
         [int] $SecondsToSleep = 20 # should be enough for most machines
     )
     $DevEnvExe = $VisualStudioInstance.InstallationPath + "\Common7\IDE\devenv.exe";
@@ -94,8 +94,8 @@ function Get-VisualStudio-Instance {
     return $Instances | Where-Object { $_.DisplayName -eq $VisualStudioVersionName } | Select-Object -First 1
 }
 
-Set-Location '..\VisualStudio\'
-$configurations = Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json
+Set-Location '..'
+$configurations = (Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json).visualStudio;
 
 foreach ($configuration in $configurations) {
     $Instance = Get-VisualStudio-Instance -VisualStudioVersionName $configuration.visualStudioVersion

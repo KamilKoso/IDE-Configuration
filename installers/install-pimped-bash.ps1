@@ -99,8 +99,9 @@ if ((Test-Is-Admin) -eq $false) {
      exit
 }
 
-Set-Location '..\Bash'
-$configurations = Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json;
+Set-Location '..'
+$configurations = (Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json).pimpedBash;
+
 Install-Windows-Terminal
 if ($null -ne $configurations.windowsTerminalSettingsPath) {
      Copy-Item $configurations.windowsTerminalSettingsPath $ENV:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState
