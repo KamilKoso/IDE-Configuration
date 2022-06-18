@@ -1,5 +1,5 @@
 # IDE Configuration
-Simple set of scripts to automate IDE configuration.
+Simple set of scripts to automate IDE configuration process.
 
 ## Installation
 Easiest way to install anything you need is to run ``all-in-one-installer`` with admin privileges. But if you want install something manually there are instructions below.
