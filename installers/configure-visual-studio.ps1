@@ -112,7 +112,9 @@ foreach ($configuration in $configurations) {
         continue
     }
 
-    Import-VisualStudioSettingsFile -VisualStudioInstance $Instance -PathToSettingsFile $configuration.settingsFile
+    if($null -ne $configuration.settingsFile) {
+        Import-VisualStudioSettingsFile -VisualStudioInstance $Instance -PathToSettingsFile $configuration.settingsFile
+    }
     foreach ($ExtensionToInstall in $configuration.extensions) {
         Install-Vsix -ExtensionName $ExtensionToInstall -VisualStudioInstance $Instance
     }

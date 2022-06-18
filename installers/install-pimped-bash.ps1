@@ -12,10 +12,8 @@ function Install-Windows-Terminal {
      else {
           Write-Information "Windows Terminal already installed. Skipping step..."
      }
-
-     Copy-Item settings.json $ENV:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState
-     Copy-Item .bashrc $ENV:USERPROFILE
 }
+
      
 function Install-PowerLine {
      $InstallationFolder = $HOME + "\.bash\themes\git_bash_windows_powerline"
@@ -29,7 +27,11 @@ function Install-PowerLine {
 }
      
 function Install-Font {
-     $FontName = "JetBrains Mono NL Regular Nerd Font Complete.ttf"
+     [cmdletbinding()]
+     Param (
+          [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 0)][string] $FontName,
+          [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 1)][string] $FontUrl
+     )
      $FontFile = Join-Path  $ENV:TEMP -ChildPath $FontName
      Write-Host $FontFile;
      $FontsPath = "$env:windir\Fonts"
@@ -40,7 +42,6 @@ function Install-Font {
      }
      try {
           Write-Information ("Installing " + $FontName + " font...")
-          $FontUrl = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/NoLigatures/Regular/complete/JetBrains%20Mono%20NL%20Regular%20Nerd%20Font%20Complete.ttf"
           Invoke-WebRequest -Uri $FontUrl -OutFile $FontFile
           $ShellFolder = (New-Object -COMObject Shell.Application).Namespace($FontsPath)
           $ShellFile = $shellFolder.ParseName($FontFile)
@@ -99,10 +100,26 @@ if ((Test-Is-Admin) -eq $false) {
 }
 
 Set-Location '..\Bash'
+$configurations = Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json;
 Install-Windows-Terminal
-Install-PowerLine
-Install-Font
-Install-Lsd
+if ($null -ne $configurations.windowsTerminalSettingsPath) {
+     Copy-Item $configurations.windowsTerminalSettingsPath $ENV:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState
+}
+if ($null -ne $configurations.bashrcPath) {
+     Copy-Item $configurations.bashrcPath $ENV:USERPROFILE
+}
+
+if($configurations.installLsd) {
+     Install-Lsd
+}
+
+if($configurations.installPowerline) {
+     Install-PowerLine
+}
+
+foreach ($font in $configurations.fontsToInstall) {
+     Install-Font -FontName $font.fontName -FontUrl $font.fontDownloadUri
+}
 
 
 
