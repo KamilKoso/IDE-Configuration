@@ -4,12 +4,8 @@ Simple set of scripts to automate IDE configuration.
 ## Installation
 Easiest way to install anything you need is to run ``all-in-one-installer`` with admin privileges. But if you want install something manually there are instructions below.
 
-```diff
--Do not close powershell when script is running, this may cause malfunctions in the system i.e. registry corruption, Visual Studio errors and more !
 
-! I do not take any 
-
-```
+**Do not close powershell when script is running, this may cause malfunctions in the system i.e. registry corruption, Visual Studio errors and more ❗**
 
 ## Pimped Bash
 <img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/pimped-bash.png">
