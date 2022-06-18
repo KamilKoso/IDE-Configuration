@@ -3,7 +3,7 @@ Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 Install-Module VSSetup -Scope CurrentUser
 Import-Module ./modules/test-is-admin.psm1 -DisableNameChecking
 Import-Module ./modules/messages.psm1 -DisableNameChecking
-Import-Module ./modules/download-from-github.psm1 -DisableNameChecking
+Import-Module ./modules/Download-From-VisualStudio-Marketplace.psm1 -DisableNameChecking
 
 function Invoke-VsixInstaller {
     param(
@@ -21,29 +21,31 @@ function Invoke-VsixInstaller {
 
     $process = [System.Diagnostics.Process]::Start($psi)
     $process.WaitForExit()
-
-    if ($process.ExitCode -ne 0) {
-        throw "VSIXInstaller exit code: '$($process.ExitCode)'"
-    }
+    return $process.ExitCode;
 }
 
 function Install-Vsix {
     [cmdletbinding()]
     Param(
-        [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 0)][string]$Author,
-        [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 1)][string]$RepoName,
-        [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 2)][string]$PackageToDownload,
-        [ValidateNotNull()][Parameter(Mandatory = $true, Position = 3)][Microsoft.VisualStudio.Setup.Instance]$VisualStudioInstance
+        [ValidateNotNullOrEmpty()][Parameter(Mandatory = $true, Position = 0)][string]$ExtensionName,
+        [ValidateNotNull()][Parameter(Mandatory = $true, Position = 1)][Microsoft.VisualStudio.Setup.Instance]$VisualStudioInstance
     )
-    Write-Information "Installing ${RepoName} $($VisualStudioInstance.DisplayName) extension..."; 
-    $File = Download-From-Github -Author $Author -RepoName $RepoName -PackageToDownload $PackageToDownload
-
+    Write-Information "Installing ${ExtensionName} extension for $($VisualStudioInstance.DisplayName)..."; 
     try {
-        Invoke-VsixInstaller -File $File -VisualStudioInstance $VisualStudioInstance
-        Write-Success "Installed ${RepoName} $($VisualStudioInstance.DisplayName) extension"; 
+        $File = Download-From-VisualStudio-Marketplace $ExtensionName
+        $ExitCode = Invoke-VsixInstaller -File $File -VisualStudioInstance $VisualStudioInstance
+        if ($ExitCode -ne 0) {
+            switch($ExitCode) {
+                2003 {Write-Warning "${ExtensionName} is already installed for $($VisualStudioInstance.DisplayName)."} # Not really sure that this code stands for that
+                default {Write-Error "VSIXInstaller exited with status code: '$($process.ExitCode)'"}
+            }
+        }
+        else {
+            Write-Success "Installed ${ExtensionName} extension for $($VisualStudioInstance.DisplayName)"; 
+        }
     }
     catch {
-        Write-Error "Error while installing ${RepoName} $($VisualStudioInstance.DisplayName) extension"; 
+        Write-Error "Error while installing ${ExtensionName} extension for $($VisualStudioInstance.DisplayName)"; 
         throw $_
     }
     finally {
@@ -55,7 +57,7 @@ function Import-VisualStudioSettingsFile {
     [CmdletBinding()]
     param(
         [ValidateNotNull()][Microsoft.VisualStudio.Setup.Instance] $VisualStudioInstance,
-        [ValidateNotNullOrEmpty()][string] $PathToSettingsFile = '..\VisualStudio\VS_2022.vssettings',
+        [ValidateNotNullOrEmpty()][string] $PathToSettingsFile,
         [int] $SecondsToSleep = 20 # should be enough for most machines
     )
     $DevEnvExe = $VisualStudioInstance.InstallationPath + "\Common7\IDE\devenv.exe";
@@ -84,28 +86,34 @@ function Import-VisualStudioSettingsFile {
 }
 
 function Get-VisualStudio-Instance {
-    $Instances = Get-VSSetupInstance
-    $InstancesCount = ($Instances | Measure-Object).Count
-    if ($InstancesCount -eq 0) {
-        Write-Error "Couldn't find any Visual Studio instance installed"
-        throw "Couldn't find any Visual Studio instance installed"
-    }
-    elseif ($InstancesCount -eq 1) {
-        $script:Instance = ($Instances | Select-VSSetupInstance -Latest)
-    }
-    else {
-        $Instances | Format-Table -Property InstanceId, @{N = 'Name'; E = { $_.DisplayName } }, @{N = 'Version'; E = { $_.InstallationVersion } }, @{N = 'Installation path'; E = { $_.InstallationPath } }, @{N = 'Installation date'; E = { $_.InstallDate } }
-        $SelectedValue = Read-Host "Write InstanceId or Name of Visual Studio that you want to configure"
-    
-        $script:Instance = $Instances | Where-Object { $_.InstanceId -eq $SelectedValue -or $_.DisplayName -eq $SelectedValue } | Select-Object -First 1
-        if ($null -eq $Instance) {
-            Write-Error "Couldn't find provided instance, try again."
-            Get-VisualStudio-Instance
-        }
-    }
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrEmpty()][string] $VisualStudioVersionName
+    )
+    $script:Instances = Get-VSSetupInstance
+    return $Instances | Where-Object { $_.DisplayName -eq $VisualStudioVersionName } | Select-Object -First 1
 }
 
-Get-VisualStudio-Instance
-Import-VisualStudioSettingsFile -VisualStudioInstance $Instance
-Install-Vsix -Author "codecadwallader" -RepoName "codemaid" -PackageToDownload "VS2022.*.vsix" -VisualStudioInstance $Instance
-Install-Vsix -Author "madskristensen" -RepoName "AddAnyFile" -PackageToDownload "vsix" -VisualStudioInstance $Instance
+Set-Location '..\VisualStudio\'
+$configurations = Get-Content '.\configuration.json' | Out-String | ConvertFrom-Json
+
+foreach ($configuration in $configurations) {
+    $Instance = Get-VisualStudio-Instance -VisualStudioVersionName $configuration.visualStudioVersion
+    if($null -eq $Instance) {
+        $ErrorMsg = "Couldn't locate installed $($configuration.visualStudioVersion). "
+        $InstancesCount = ($Instances | Measure-Object).Count
+        if($InstancesCount -eq 0) {
+            $ErrorMsg += "None versions were located."
+        } else {
+            $ErrorMsg += "Located following versions: "
+            $ErrorMsg += $Instances.DisplayName -join ", "
+        }
+        Write-Error $ErrorMsg
+        continue
+    }
+
+    Import-VisualStudioSettingsFile -VisualStudioInstance $Instance -PathToSettingsFile $configuration.settingsFile
+    foreach ($ExtensionToInstall in $configuration.extensions) {
+        Install-Vsix -ExtensionName $ExtensionToInstall -VisualStudioInstance $Instance
+    }
+}

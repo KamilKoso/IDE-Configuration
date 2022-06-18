@@ -7,7 +7,7 @@ function Download-From-Github {
     )
 
     $uri = "https://api.github.com/repos/${Author}/${RepoName}/releases"
-    $Request = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+    $Request = Invoke-RestMethod -uri $uri
     $Data = $Request[0].assets | Where-Object name -Match $PackageToDownload
     $DownloadUrl = $Data.browser_download_url
     $File = Join-Path -path $env:temp -ChildPath $Data.name

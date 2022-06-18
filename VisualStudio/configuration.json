@@ -1,0 +1,13 @@
+[
+     {
+        "visualStudioVersion": "Visual Studio Community 2022",
+        "settingsFile": "./VS_2022.vssettings",
+        "extensions": [
+            "SteveCadwallader.CodeMaid", 
+            "MadsKristensen.AddNewFile64", 
+            "TomasRestrepo.Viasfora", 
+            "OlegTarasov.Iconizer2022", 
+            "EinarEgilsson.StopOnFirstBuildError"
+        ]
+    }
+]

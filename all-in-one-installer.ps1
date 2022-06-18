@@ -23,9 +23,9 @@ function Write-Welcome-Message {
     Write-Host  "*  3. Install PowerToys       Installs PowerToys and applies settings       *"
     Write-Host  "*                             located in PowerToys directory                *"
     Write-Host  "*                                                                           *"
-    Write-Host  "*  4. Configure Visual Studio Imports settings from VisualStudio folder     *"
-    Write-Host  "*                             installs extensions specified in              *"
-    Write-Host  "*                             installers/configure-visual-studio.ps1        *"
+    Write-Host  "*  4. Configure Visual Studio Imports settings and installs extensions       *"
+    Write-Host  "*                             specified in VisualStudio/configuration.json  *"
+    Write-Host  "*                             for every Visual Studio version specified     *"
     Write-Host  "*                                                                           *"
     Write-Exit-Line
     Write-Host  "*                                                                           *"

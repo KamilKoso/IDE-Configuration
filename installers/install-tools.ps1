@@ -23,7 +23,7 @@ function Install-WinGet {
     try {
         Write-Information "Installing Winget"
         $File = Download-From-Github -Author "Microsoft" -RepoName "winget-cli" -PackageToDownload "msixbundle"
-        Add-AppxPackage -Path $File -ErrorAction Stop
+        Add-AppxPackage -Path $File
         if ($passthru) {
             Get-AppxPackage microsoft.desktopAppInstaller
         }
@@ -34,7 +34,7 @@ function Install-WinGet {
         throw $_
     }
     finally {
-        Remove-Item $File
+        Remove-Item $File -Force
     }
 }
 

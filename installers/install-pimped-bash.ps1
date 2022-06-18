@@ -41,7 +41,7 @@ function Install-Font {
      try {
           Write-Information ("Installing " + $FontName + " font...")
           $FontUrl = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/NoLigatures/Regular/complete/JetBrains%20Mono%20NL%20Regular%20Nerd%20Font%20Complete.ttf"
-          Invoke-RestMethod -Uri $FontUrl -OutFile $FontFile
+          Invoke-WebRequest -Uri $FontUrl -OutFile $FontFile
           $ShellFolder = (New-Object -COMObject Shell.Application).Namespace($FontsPath)
           $ShellFile = $shellFolder.ParseName($FontFile)
           $ShellFileType = $shellFolder.GetDetailsOf($shellFile, 2)
@@ -53,7 +53,6 @@ function Install-Font {
           $RegName = $shellFolder.GetDetailsOf($shellFile, 21) + ' ' + $FontType
           New-ItemProperty -Name $RegName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $FontName -Force | out-null
           Copy-item $FontFile -Destination $FontsPath
-          Remove-Item $FontFile -Force
           Write-Success ("Instaled " + $FontName + " font")
      }
      catch {
@@ -70,7 +69,7 @@ function Install-Lsd {
      if (![bool](Get-Command -Name 'scoop' -ErrorAction SilentlyContinue)) {
           Write-Information "Installing scoop..."
           Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-          Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
+          Invoke-Expression "& {$(Invoke-WebRequest get.scoop.sh)} -RunAsAdmin"
           Write-Success "Installed scoop"
      }
      else {
