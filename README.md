@@ -32,5 +32,5 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 
 ### Manual installation
 1. Install [PowerToys](https://apps.microsoft.com/store/detail/microsoft-powertoys/XP89DCGQ3K6VLD)
-2. Go to %LOCALAPPDATA%\Microsoft\PowerToys
+2. Go to ``%LOCALAPPDATA%\Microsoft\PowerToys``
 3. Replace ``settings.json``
