@@ -17,7 +17,7 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 4. Install [powerline](https://github.com/diesire/git_bash_windows_powerline)
 5. Install [lsd](https://github.com/Peltoche/lsd)
 6. Copy ``settings.json`` to ``%USERPROFILE%\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState``
-7. Copy ``.bashrc`` to %USERPROFILE%
+7. Copy ``.bashrc`` to ``%USERPROFILE%``
 
 # Visual Studio
 <img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/VisualStudio-Icon.png" width="20%">
@@ -33,4 +33,4 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 ### Manual installation
 1. Install [PowerToys](https://apps.microsoft.com/store/detail/microsoft-powertoys/XP89DCGQ3K6VLD)
 2. Go to %LOCALAPPDATA%\Microsoft\PowerToys
-3. Replace settings.json
+3. Replace ``settings.json``
