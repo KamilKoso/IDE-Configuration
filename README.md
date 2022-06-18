@@ -4,6 +4,12 @@ Simple set of scripts to automate IDE configuration.
 ## Installation
 Easiest way to install anything you need is to run ``all-in-one-installer`` with admin privileges. But if you want install something manually there are instructions below.
 
+```diff
+-Do not close powershell when script is running, this may cause malfunctions in the system i.e. registry corruption, Visual Studio errors and more !
+
+! I do not take any 
+
+```
 
 ## Pimped Bash
 <img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/pimped-bash.png">
@@ -18,7 +24,13 @@ Easiest way to install anything you need is to run ``all-in-one-installer`` with
 7. Copy ``.bashrc`` to %USERPROFILE%
 
 # Visual Studio
-I found automating this step very complicated so just open Visual Studio then Tools -> Import and Export Settings
+<img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/VisualStudio-Icon.png" width="20%">
+
+### Manual installation
+1. Install [Visual Studio](https://visualstudio.microsoft.com/pl/)
+2. Open it and import settings (under Tools -> Import and Export settins)
+3. Install desired extensions (e.g. [CodeMaid](https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid), [Add New File](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.AddNewFile64))
+
 # Power Toys
 <img src="https://raw.githubusercontent.com/KamilKoso/IDE-Configuration/master/assets/powertoys-icon.png" width="20%">
 

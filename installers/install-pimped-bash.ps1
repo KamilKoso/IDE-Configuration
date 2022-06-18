@@ -30,30 +30,39 @@ function Install-PowerLine {
      
 function Install-Font {
      $FontName = "JetBrains Mono NL Regular Nerd Font Complete.ttf"
+     $FontFile = Join-Path  $ENV:TEMP -ChildPath $FontName
+     Write-Host $FontFile;
      $FontsPath = "$env:windir\Fonts"
      $TargetPath = Join-Path $FontsPath $FontName
      if (Test-Path $TargetPath) {
           Write-Information ($FontName + " is already installed. Skipping step.")
           return
      }
-
-     Write-Information ("Installing " + $FontName + " font...")
-     $FontUrl = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/NoLigatures/Regular/complete/JetBrains%20Mono%20NL%20Regular%20Nerd%20Font%20Complete.ttf"
-     Invoke-RestMethod -Uri $FontUrl -OutFile $FontName
-     $FontFile = Get-Item $FontName
-     $ShellFolder = (New-Object -COMObject Shell.Application).Namespace($FontsPath)
-     $ShellFile = $shellFolder.ParseName($FontFile.name)
-     $ShellFileType = $shellFolder.GetDetailsOf($shellFile, 2)
-     #Set the $FontType Variable
-     If ($ShellFileType -Like '*TrueType font file*') {
-          $FontType = '(TrueType)'
+     try {
+          Write-Information ("Installing " + $FontName + " font...")
+          $FontUrl = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/NoLigatures/Regular/complete/JetBrains%20Mono%20NL%20Regular%20Nerd%20Font%20Complete.ttf"
+          Invoke-RestMethod -Uri $FontUrl -OutFile $FontFile
+          $ShellFolder = (New-Object -COMObject Shell.Application).Namespace($FontsPath)
+          $ShellFile = $shellFolder.ParseName($FontFile)
+          $ShellFileType = $shellFolder.GetDetailsOf($shellFile, 2)
+          #Set the $FontType Variable
+          If ($ShellFileType -Like '*TrueType font file*') {
+               $FontType = '(TrueType)'
+          }
+          #Update Registry and copy font to font directory
+          $RegName = $shellFolder.GetDetailsOf($shellFile, 21) + ' ' + $FontType
+          New-ItemProperty -Name $RegName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $FontName -Force | out-null
+          Copy-item $FontFile -Destination $FontsPath
+          Remove-Item $FontFile -Force
+          Write-Success ("Instaled " + $FontName + " font")
      }
-     #Update Registry and copy font to font directory
-     $RegName = $shellFolder.GetDetailsOf($shellFile, 21) + ' ' + $FontType
-     New-ItemProperty -Name $RegName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $FontFile.name -Force | out-null
-     Copy-item $FontFile.FullName -Destination $FontsPath
-     Remove-Item $FontName
-     Write-Success ("Instaled " + $FontName + " font")
+     catch {
+          Write-Error "Error occured while installing font"
+          throw $_
+     }
+     finally {
+          Remove-Item $FontFile -Force
+     }
 }
 
 function Install-Lsd {

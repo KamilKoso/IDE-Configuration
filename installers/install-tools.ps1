@@ -1,6 +1,7 @@
 Set-Location $PSScriptRoot;
 Import-Module ./modules/test-is-admin.psm1 -DisableNameChecking
 Import-Module ./modules/messages.psm1 -DisableNameChecking
+Import-Module ./modules/download-from-github.psm1 -DisableNameChecking
 
 function Install-WinGet {
     #Install the latest package from GitHub
@@ -11,33 +12,30 @@ function Install-WinGet {
         [switch]$Passthru
     )
     if ($PSVersionTable.PSVersion.Major -eq 7) {
-         Write-Warning "This command does not work in PowerShell 7. You must install in Windows PowerShell."
-         return
+        Write-Error "This command does not work in PowerShell 7. You must install in Windows PowerShell."
+        return
     }
     
-    if([bool](Get-Command -Name 'winget' -ErrorAction SilentlyContinue)) {
-         Write-Information "Winget is already installed."
-         return;
+    if ([bool](Get-Command -Name 'winget' -ErrorAction SilentlyContinue)) {
+        Write-Information "Winget is already installed."
+        return;
     }
-
-    Write-Information "Installing Winget"
-    $uri = "https://api.github.com/repos/microsoft/winget-cli/releases"
-        $get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-        $data = $get[0].assets | Where-Object name -Match 'msixbundle'
-        $appx = $data.browser_download_url
-        If ($pscmdlet.ShouldProcess($appx, "Downloading asset")) {
-            $file = Join-Path -path $env:temp -ChildPath $data.name
-
-            Invoke-WebRequest -Uri $appx -UseBasicParsing -DisableKeepAlive -OutFile $file
-
-            Write-Verbose "[$((Get-Date).TimeofDay)] Adding Appx Package"
-            Add-AppxPackage -Path $file -ErrorAction Stop
-
-            if ($passthru) {
-                Get-AppxPackage microsoft.desktopAppInstaller
-            }
+    try {
+        Write-Information "Installing Winget"
+        $File = Download-From-Github -Author "Microsoft" -RepoName "winget-cli" -PackageToDownload "msixbundle"
+        Add-AppxPackage -Path $File -ErrorAction Stop
+        if ($passthru) {
+            Get-AppxPackage microsoft.desktopAppInstaller
         }
-    Write-Success "Installed Winget"
+        Write-Success "Installed Winget"
+    }
+    catch {
+        Write-Error "Error occured while installing WinGet"
+        throw $_
+    }
+    finally {
+        Remove-Item $File
+    }
 }
 
 Install-WinGet
