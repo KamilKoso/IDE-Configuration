@@ -21,10 +21,7 @@ function Write-Welcome-Message {
     Write-Host  "*  2. Install Pimped Bash     Installs Windows Terminal, fonts, powerline,   *"
     Write-Host  "*                             lsd and configures all of it                   *"
     Write-Host  "*                                                                            *"
-    Write-Host  "*  3. Install PowerToys       Installs PowerToys and applies settings        *"
-    Write-Host  "*                             located in PowerToys directory                 *"
-    Write-Host  "*                                                                            *"
-    Write-Host  "*  4. Configure Visual Studio Imports settings and installs extensions       *"
+    Write-Host  "*  3. Configure Visual Studio Imports settings and installs extensions       *"
     Write-Host  "*                             specified in VisualStudio/configuration.json   *"
     Write-Host  "*                             for every Visual Studio version specified      *"
     Write-Host  "*                                                                            *"
@@ -76,10 +73,6 @@ while ($true) {
             break
         }
         'D3' {
-            Invoke-Expression './installers/install-powertoys.ps1'
-            break
-        }
-        'D4' {
             Invoke-Expression './installers/configure-visual-studio.ps1'
             break
         }

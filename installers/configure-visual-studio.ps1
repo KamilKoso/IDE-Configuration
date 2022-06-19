@@ -13,7 +13,7 @@ function Invoke-VsixInstaller {
 
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $VisualStudioInstance.InstallationPath + "\Common7\IDE\VSIXInstaller.exe"
-    $psi.Arguments = "/q /sp /instanceIds $($VisualStudioInstance.InstanceId) $File"
+    $psi.Arguments = "/q /sp /instanceIds:$($VisualStudioInstance.InstanceId) $File"
 
     if (-not (Test-Path $psi.FileName)) {
         throw "Could not find $($VisualStudioInstance.DisplayName) VSIXInstaller.exe at: ${psi.FileName}"
@@ -38,7 +38,7 @@ function Install-Vsix {
             switch($ExitCode) {
                 1001 {Write-Warning "${ExtensionName} is already installed for $($VisualStudioInstance.DisplayName)."} 
                 2003 {Write-Warning "${ExtensionName} is not installable for $($VisualStudioInstance.DisplayName)."}
-                default {Write-Error "VSIXInstaller exited with status code: '$($process.ExitCode)'"}
+                default {Write-Error "VSIXInstaller exited with status code: '$($ExitCode)'"}
             }
         }
         else {
@@ -114,7 +114,7 @@ foreach ($configuration in $configurations) {
     }
 
     if($null -ne $configuration.settingsFile) {
-        Import-VisualStudioSettingsFile -VisualStudioInstance $Instance -PathToSettingsFile $configuration.settingsFile
+        # Import-VisualStudioSettingsFile -VisualStudioInstance $Instance -PathToSettingsFile $configuration.settingsFile
     }
     foreach ($ExtensionToInstall in $configuration.extensions) {
         Install-Vsix -ExtensionName $ExtensionToInstall -VisualStudioInstance $Instance
