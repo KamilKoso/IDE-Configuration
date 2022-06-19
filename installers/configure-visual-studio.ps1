@@ -13,7 +13,7 @@ function Invoke-VsixInstaller {
 
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $VisualStudioInstance.InstallationPath + "\Common7\IDE\VSIXInstaller.exe"
-    $psi.Arguments = "/q $File"
+    $psi.Arguments = "/q /sp /instanceIds $($VisualStudioInstance.InstanceId) $File"
 
     if (-not (Test-Path $psi.FileName)) {
         throw "Could not find $($VisualStudioInstance.DisplayName) VSIXInstaller.exe at: ${psi.FileName}"
@@ -36,7 +36,8 @@ function Install-Vsix {
         $ExitCode = Invoke-VsixInstaller -File $File -VisualStudioInstance $VisualStudioInstance
         if ($ExitCode -ne 0) {
             switch($ExitCode) {
-                2003 {Write-Warning "${ExtensionName} is already installed for $($VisualStudioInstance.DisplayName)."} # Not really sure that this code stands for that
+                1001 {Write-Warning "${ExtensionName} is already installed for $($VisualStudioInstance.DisplayName)."} 
+                2003 {Write-Warning "${ExtensionName} is not installable for $($VisualStudioInstance.DisplayName)."}
                 default {Write-Error "VSIXInstaller exited with status code: '$($process.ExitCode)'"}
             }
         }
@@ -118,4 +119,4 @@ foreach ($configuration in $configurations) {
     foreach ($ExtensionToInstall in $configuration.extensions) {
         Install-Vsix -ExtensionName $ExtensionToInstall -VisualStudioInstance $Instance
     }
-}
+ }
